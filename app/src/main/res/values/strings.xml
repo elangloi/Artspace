@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Artspace</string>
+    <string name="collaboration_toggle">Start A Collaboration</string>
+    <string name="title">Artwork or Event Name</string>
+    <string name="location">Location</string>
+    <string name="description">Description</string>
+    <string name="contact">Contact Phone</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+
 </resources>
