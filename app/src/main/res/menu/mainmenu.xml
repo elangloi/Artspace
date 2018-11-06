@@ -7,7 +7,7 @@
         <item
             android:id="@+id/btnaddart"
             android:title="Add Art"
-            android:icon="@drawable/addicon"
+           />/ android:icon="@drawable/addicon"
             />
     </menu>
 
