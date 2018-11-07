@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddArt"></activity>
+        <activity android:name=".MyArt"></activity>
     </application>
 
 </manifest>
