@@ -16,6 +16,8 @@ public class AddArt extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_art);
 
+        setTitle("Add Art");
+
         // Cancel button return to main screen
         Button btnCancel = (Button) findViewById(R.id.btnCancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {

@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.btnaddart) {
             // Move to art art activity
             startActivity(new Intent(MainActivity.this, AddArt.class));
+        } else if (id == R.id.btnviewart) {
+            startActivity(new Intent(MainActivity.this,
+                    LocationView.class).putExtra(LocationView.ART_ITEM_TAG, "ID"));
         }
         return super.onOptionsItemSelected(item);
     }

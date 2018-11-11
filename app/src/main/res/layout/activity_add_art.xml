@@ -89,32 +89,25 @@
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="231dp" />
 
+        <Switch
+            android:id="@+id/swInAppCollab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/in_app_toggle" />
+
+        <LinearLayout
+            android:id="@+id/layoutCanvas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/layoutCollab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="@string/time" />
-
-                <EditText
-                    android:id="@+id/editText6"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="time" />
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -158,6 +151,27 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:inputType="date" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/time" />
+
+                <EditText
+                    android:id="@+id/editText6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="time" />
             </LinearLayout>
 
         </LinearLayout>
