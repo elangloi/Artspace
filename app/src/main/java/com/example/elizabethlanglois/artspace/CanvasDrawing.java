@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.*;
 import android.content.Context;
 import android.widget.LinearLayout;
+import android.widget.Button;
 
 public class CanvasDrawing extends AppCompatActivity {
 
@@ -23,6 +24,7 @@ public class CanvasDrawing extends AppCompatActivity {
 
         setTitle("Collaboration Canvas");
 
+        // TODO Pull image from firebase and draw into current view
         drawingView = new DrawingView(this, null);
 
         LayoutInflater inflater = (LayoutInflater)getApplicationContext()
@@ -33,8 +35,24 @@ public class CanvasDrawing extends AppCompatActivity {
         LinearLayout drawingContainer = (LinearLayout) findViewById(R.id.canvasLayout);
         drawingContainer.addView(drawingLayout);
 
+        ((Button)findViewById(R.id.btnCancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(AddArt.RESULT_CANCELED);
+                finish();
+            }
+        });
 
-        //setContentView(drawingView);
+        ((Button)findViewById(R.id.btnSubmit)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //TODO Save the new drawing and upload to firebase
+
+                setResult(AddArt.RESULT_OK);
+                finish();
+            }
+        });
     }
 
     public class DrawingView extends View {
