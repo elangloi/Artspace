@@ -16,9 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddArt"></activity>
-        <activity android:name=".MyArt"></activity>
-        <activity android:name=".LocationView"></activity>
+        <activity android:name=".AddArt" />
+        <activity android:name=".MyArt" />
+        <activity android:name=".LocationView" />
+        <activity android:name=".CanvasDrawing"></activity>
     </application>
 
 </manifest>

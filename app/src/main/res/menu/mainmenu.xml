@@ -17,5 +17,9 @@
             android:id="@+id/btnmyart"
             android:title="My Art" />
 
+        <item
+            android:id="@+id/btndraw"
+            android:title="Draw" />
+
     </menu>
 

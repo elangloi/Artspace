@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
                     LocationView.class).putExtra(LocationView.ART_ITEM_TAG, "ID"));
         } else if(id == R.id.btnmyart){
             startActivity(new Intent(MainActivity.this, MyArt.class));
+        } else if(id == R.id.btndraw) {
+            startActivity(new Intent(MainActivity.this, CanvasDrawing.class));
         }
         return super.onOptionsItemSelected(item);
     }
