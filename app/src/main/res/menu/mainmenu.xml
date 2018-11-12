@@ -6,8 +6,10 @@
         android:layout_height="match_parent">
         <item
             android:id="@+id/btnaddart"
-            android:icon="@drawable/addicon"
             android:title="Add Art" />
+            <!-- android:icon="@drawable/addicon"-->
+
+
 
         <item
             android:id="@+id/btnviewart"

@@ -8,5 +8,5 @@
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="in_app_toggle">Collaborate In-App</string>
-
+    <string name="login">Click to Login</string>
 </resources>
