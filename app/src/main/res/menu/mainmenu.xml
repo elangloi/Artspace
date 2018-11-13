@@ -26,6 +26,9 @@
         <item
             android:id="@+id/btnexplore"
             android:title="Explore Art" />
+        <item
+            android:id="@+id/btnlogin"
+            android:title="Login" />
 
     </menu>
 

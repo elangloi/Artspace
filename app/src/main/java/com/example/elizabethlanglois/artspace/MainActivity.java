@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, CanvasDrawing.class));
         } else if(id == R.id.btnexplore) {
             startActivity(new Intent(MainActivity.this, ExploreActivity.class));
+        } else if(id == R.id.btnlogin){
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
