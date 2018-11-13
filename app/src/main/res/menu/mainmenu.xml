@@ -23,5 +23,9 @@
             android:id="@+id/btndraw"
             android:title="Draw" />
 
+        <item
+            android:id="@+id/btnexplore"
+            android:title="Explore Art" />
+
     </menu>
 

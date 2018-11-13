@@ -19,7 +19,10 @@
         <activity android:name=".AddArt" />
         <activity android:name=".MyArt" />
         <activity android:name=".LocationView" />
-        <activity android:name=".CanvasDrawing"></activity>
+        <activity android:name=".CanvasDrawing"/>
+        <activity android:name=".ExploreActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
     </application>
 
 </manifest>
