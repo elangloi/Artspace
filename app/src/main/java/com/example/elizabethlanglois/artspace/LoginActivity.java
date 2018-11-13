@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Login extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity{
 
     Button b1;
     EditText username;
@@ -19,6 +19,7 @@ public class Login extends AppCompatActivity{
     private String [] usernames = {"User1"};
     private String [] passwords = {"Pass1"};
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activty_login);
