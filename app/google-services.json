@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1094524308210",
+    "firebase_url": "https://artspace-bb917.firebaseio.com",
+    "project_id": "artspace-bb917",
+    "storage_bucket": "artspace-bb917.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094524308210:android:11ee27f16efee99d",
+        "android_client_info": {
+          "package_name": "com.example.elizabethlanglois.artspace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094524308210-jckie3rfk05k231nd8v9kp54vorna4i8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.elizabethlanglois.artspace",
+            "certificate_hash": "a10386d82dbbd2f66f291c0cb28905a9bb7e518a"
+          }
+        },
+        {
+          "client_id": "1094524308210-6kltbbidjbo2bk508ck3f5tcc7n4f7ti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb6w4oJPFzEFbpN1XZlBmfl1kTXlaFbi8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094524308210-6kltbbidjbo2bk508ck3f5tcc7n4f7ti.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
