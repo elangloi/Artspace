@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseDatabase.getInstance().getReference("Users");
         Log.i("TEST", db.toString());
+
     }
 
     // create an action bar button

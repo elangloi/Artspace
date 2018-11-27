@@ -1,5 +1,6 @@
 package com.example.elizabethlanglois.artspace;
 
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.util.Log;
 import android.widget.Toast;
+import android.util.Base64;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,7 +21,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.*;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayOutputStream;
+
+import static android.graphics.Bitmap.Config.ARGB_8888;
 
 public class AddArt extends AppCompatActivity {
 
@@ -33,19 +37,6 @@ public class AddArt extends AppCompatActivity {
         setTitle("Add Art");
 
         db = FirebaseDatabase.getInstance().getReference("Art_items");
-
-        db.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Object document = dataSnapshot.getValue();
-                Log.i("db change", document.toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.i("db cancel", error.toString());
-            }
-        });
 
         // Cancel button return to main screen
         Button btnCancel = (Button) findViewById(R.id.btnCancel);
@@ -62,10 +53,13 @@ public class AddArt extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 createArtItem();
-                //TODO uncomment
-                /*setResult(AddArt.RESULT_OK);
-                finish();*/
+
+                //TODO Connect created art item to the user who is logged in
+
+                setResult(AddArt.RESULT_OK);
+                finish();
             }
         });
 
@@ -84,6 +78,19 @@ public class AddArt extends AppCompatActivity {
             }
         });
 
+        // Hide collab details when the user wants to create a drawing
+        final Switch btnDrawing = (Switch) findViewById(R.id.swInAppCollab);
+        final LinearLayout layoutNonDraw = (LinearLayout) findViewById(R.id.layoutNonDraw);
+        btnDrawing.setChecked(false);
+        layoutNonDraw.setVisibility(LinearLayout.VISIBLE);
+        btnDrawing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                layoutNonDraw.setVisibility(btnDrawing.isChecked() ?
+                    LinearLayout.GONE: LinearLayout.VISIBLE);
+            }
+        });
+
     }
 
     public void createArtItem() {
@@ -95,31 +102,48 @@ public class AddArt extends AppCompatActivity {
         ArtItem artItem = new ArtItem(title, location, description);
 
         if(((Switch) findViewById(R.id.swCollab)).isChecked()) {
-            // Get collaboration details
 
             if(((Switch) findViewById(R.id.swInAppCollab)).isChecked()) {
+
+                // Set drawing details
                 artItem.setType("drawing");
-                // TODO Upload a blank image to firebase?
+
+                // Upload a blank image to firebase
+                Bitmap newDrawing = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+                artItem.drawing = getImageData(newDrawing);
             } else {
+
+                // Set collaboration details
                 artItem.setType("collaboration");
+
+                String date = ((TextView)findViewById(R.id.txtDate)).getText().toString();
+                String time = ((TextView)findViewById(R.id.txtTime)).getText().toString();
+                String contact = ((TextView)findViewById(R.id.txtPhone)).getText().toString();
+
+                artItem.setDate(date);
+                artItem.setTime(time);
+                artItem.setContact(contact);
             }
-
-            String date = ((TextView)findViewById(R.id.txtDate)).getText().toString();
-            String time = ((TextView)findViewById(R.id.txtTime)).getText().toString();
-            String contact = ((TextView)findViewById(R.id.txtPhone)).getText().toString();
-
-            artItem.setDate(date);
-            artItem.setTime(time);
-            artItem.setContact(contact);
 
         } else {
             artItem.setType("viewable");
         }
 
-        // TODO fix firebase?? following code will not actually upload
+        // Upload details to firebase
         String id = db.push().getKey();
         db.child(id).setValue(artItem);
         Toast.makeText(this, "Art added!", Toast.LENGTH_SHORT).show();
 
+    }
+
+    public static String getImageData(Bitmap bmp) {
+
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, bao); // bmp is bitmap from user image file
+        bmp.recycle();
+        byte[] byteArray = bao.toByteArray(); //bYtE.toByteArray();
+        String imageB64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        //  store & retrieve this string to firebase
+        return imageB64;
     }
 }

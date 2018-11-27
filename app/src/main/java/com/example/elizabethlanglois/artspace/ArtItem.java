@@ -1,9 +1,12 @@
 package com.example.elizabethlanglois.artspace;
 
+import android.graphics.Bitmap;
+
 public class ArtItem {
 
     public String title, location, description, type;
     public String date, time, contact;
+    public String drawing;
 
     public ArtItem(String title, String location, String description) {
         this.title = title;

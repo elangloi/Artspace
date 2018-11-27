@@ -1,5 +1,6 @@
 package com.example.elizabethlanglois.artspace;
 
+import java.nio.Buffer;
 import java.util.Random;
 
 import android.graphics.drawable.Drawable;
@@ -51,6 +52,9 @@ public class CanvasDrawing extends AppCompatActivity {
             public void onClick(View v) {
 
                 Bitmap drawing = drawingView.saveView();
+
+                //Buffer dst = new BuffereredImage();
+                //drawing.copyPixelsToBuffer(dst);
 
                 //TODO Upload new drawing to firebase
 
