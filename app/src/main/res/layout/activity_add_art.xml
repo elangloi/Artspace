@@ -89,25 +89,17 @@
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="231dp" />
 
-        <Switch
-            android:id="@+id/swInAppCollab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/in_app_toggle" />
-
-        <LinearLayout
-            android:id="@+id/layoutCanvas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
         <LinearLayout
             android:id="@+id/layoutCollab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <Switch
+                android:id="@+id/swInAppCollab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/in_app_toggle" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -145,7 +137,7 @@
                     android:text="@string/date" />
 
                 <EditText
-                    android:id="@+id/editText5"
+                    android:id="@+id/txtDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -166,7 +158,7 @@
                     android:text="@string/time" />
 
                 <EditText
-                    android:id="@+id/editText6"
+                    android:id="@+id/txtTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

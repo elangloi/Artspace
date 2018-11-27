@@ -2,6 +2,7 @@ package com.example.elizabethlanglois.artspace;
 
 import java.util.Random;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -24,8 +25,10 @@ public class CanvasDrawing extends AppCompatActivity {
 
         setTitle("Collaboration Canvas");
 
-        // TODO Pull image from firebase and draw into current view
         drawingView = new DrawingView(this, null);
+
+        // TODO Pull image from firebase and draw into current view rather than hardcoded image
+        drawingView.setBackground(getResources().getDrawable(R.drawable.addicon));
 
         LayoutInflater inflater = (LayoutInflater)getApplicationContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,7 +50,9 @@ public class CanvasDrawing extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //TODO Save the new drawing and upload to firebase
+                Bitmap drawing = drawingView.saveView();
+
+                //TODO Upload new drawing to firebase
 
                 setResult(AddArt.RESULT_OK);
                 finish();
@@ -126,6 +131,19 @@ public class CanvasDrawing extends AppCompatActivity {
 
             invalidate();
             return true;
+        }
+
+        public Bitmap saveView() {
+            Bitmap drawing = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas bindingCanvas = new Canvas(drawing);
+            Drawable bgDrawable = getBackground();
+            if(bgDrawable != null) {
+                bgDrawable.draw(bindingCanvas);
+            } else {
+                bindingCanvas.drawColor(Color.WHITE);
+            }
+            draw(bindingCanvas);
+            return drawing;
         }
     }
 }

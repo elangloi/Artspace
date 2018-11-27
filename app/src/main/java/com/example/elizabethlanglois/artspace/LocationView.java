@@ -1,7 +1,9 @@
 package com.example.elizabethlanglois.artspace;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -38,6 +40,7 @@ public class LocationView extends AppCompatActivity {
     protected void populateLayout() {
 
         // TODO Connect to firebase to retrieve values associated with artitem
+
         String title = "Fish Mural";
         String location = "Ocean";
         String description = "Wow fish paintings!";
@@ -46,7 +49,8 @@ public class LocationView extends AppCompatActivity {
         String date = "12/25/2018";
         String time = "11:00:AM";
         boolean inApp = true;
-        // TODO get image encoding and format as drawing?
+
+        // TODO get image encoding from firebase and format as drawing
 
         // Retrieve views and populate
         TextView vTitle = findViewById(R.id.title);
@@ -78,8 +82,19 @@ public class LocationView extends AppCompatActivity {
         if(inApp) {
             vInAppCollab.setVisibility(LinearLayout.VISIBLE);
 
-            // TODO Show image with sticker addition options
+            // TODO Show image from firebase
             ImageView vCanvas = findViewById(R.id.canvas);
+
+            // On image click, allow image to be edited
+            // Start canvasdrawing with the art item id
+            vCanvas.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(LocationView.this,
+                            LocationView.class).putExtra(LocationView.ART_ITEM_TAG, itemID));
+                }
+            });
+
         } else {
             vInAppCollab.setVisibility(LinearLayout.GONE);
         }
