@@ -1,6 +1,7 @@
 package com.example.elizabethlanglois.artspace;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
@@ -136,14 +137,21 @@ public class AddArt extends AppCompatActivity {
 
     }
 
-    public static String getImageData(Bitmap bmp) {
+    // Prep image encoding to be stored in firebase
+    public String getImageData(Bitmap bmp) {
 
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, bao); // bmp is bitmap from user image file
+
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, bao);
         bmp.recycle();
-        byte[] byteArray = bao.toByteArray(); //bYtE.toByteArray();
-        String imageB64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
-        //  store & retrieve this string to firebase
+
+        // Background test with hard coded image
+        // Bitmap testBackground = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.addicon);
+        // testBackground.compress(Bitmap.CompressFormat.PNG, 100, bao);
+
+        byte[] byteArray = bao.toByteArray();
+        String imageB64 = Base64.encodeToString(byteArray, Base64.URL_SAFE);
+
         return imageB64;
     }
 }

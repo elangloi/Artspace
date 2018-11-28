@@ -1,22 +1,36 @@
 package com.example.elizabethlanglois.artspace;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.Buffer;
 import java.util.Random;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.graphics.*;
 import android.util.AttributeSet;
+import android.util.Base64;
+import android.util.Log;
 import android.view.*;
 import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class CanvasDrawing extends AppCompatActivity {
 
     DrawingView drawingView;
+    private String itemID;
+    DatabaseReference db;
+    String imageEncoding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,42 +40,76 @@ public class CanvasDrawing extends AppCompatActivity {
 
         setTitle("Collaboration Canvas");
 
-        drawingView = new DrawingView(this, null);
+        // Note that this activity requires an art item id and an existing drawing
+        Bundle b = getIntent().getExtras();
+        if(b == null) {
+            // Uncomment to work with test ID
+            // itemID = "-LSQgGgZYCmrn1bDZl6C";
 
-        // TODO Pull image from firebase and draw into current view rather than hardcoded image
-        drawingView.setBackground(getResources().getDrawable(R.drawable.addicon));
+            Toast.makeText(getApplicationContext(), "Sorry, we couldn't find that collaboration :(", Toast.LENGTH_LONG).show();
+            setResult(AddArt.RESULT_CANCELED);
+            finish();
+        } else {
+            itemID = b.getString(LocationView.ART_ITEM_TAG);
 
-        LayoutInflater inflater = (LayoutInflater)getApplicationContext()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout drawingLayout = (LinearLayout) inflater.inflate(R.layout.drawing_space, null);
-        drawingLayout.addView(drawingView);
+            drawingView = new DrawingView(this, null);
 
-        LinearLayout drawingContainer = (LinearLayout) findViewById(R.id.canvasLayout);
-        drawingContainer.addView(drawingLayout);
+            // Get encoded image that users have collaborated on
+            db = FirebaseDatabase.getInstance().getReference("Art_items");
+            db.child(itemID).child("drawing").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-        ((Button)findViewById(R.id.btnCancel)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setResult(AddArt.RESULT_CANCELED);
-                finish();
-            }
-        });
+                    String drawingEncoding = dataSnapshot.getValue(String.class);
+                    imageEncoding = drawingEncoding;
 
-        ((Button)findViewById(R.id.btnSubmit)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    // Pull image from firebase and draw into current view
+                    Bitmap oldImage = getImageFromData(imageEncoding);
+                    drawingView.setBackground(new BitmapDrawable(getResources(), oldImage));
+                }
 
-                Bitmap drawing = drawingView.saveView();
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.i("Firebase err", databaseError.toString());
+                }
+            });
 
-                //Buffer dst = new BuffereredImage();
-                //drawing.copyPixelsToBuffer(dst);
+            // Prepare for drawing
+            LayoutInflater inflater = (LayoutInflater)getApplicationContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LinearLayout drawingLayout = (LinearLayout) inflater.inflate(R.layout.drawing_space, null);
+            drawingLayout.addView(drawingView);
 
-                //TODO Upload new drawing to firebase
+            LinearLayout drawingContainer = (LinearLayout) findViewById(R.id.canvasLayout);
+            drawingContainer.addView(drawingLayout);
 
-                setResult(AddArt.RESULT_OK);
-                finish();
-            }
-        });
+            // Handle cancel button
+            ((Button)findViewById(R.id.btnCancel)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setResult(AddArt.RESULT_CANCELED);
+                    finish();
+                }
+            });
+
+            // Handle submit button
+            ((Button)findViewById(R.id.btnSubmit)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    // Upload new drawing to firebase under existing art item
+                    Bitmap drawing = drawingView.saveView();
+                    String encodedDrawing = getImageData(drawing);
+
+                    db.child(itemID).child("drawing").setValue(encodedDrawing);
+                    Toast.makeText(CanvasDrawing.this, "Collaboration uploaded!", Toast.LENGTH_SHORT).show();
+
+                    setResult(AddArt.RESULT_OK);
+                    finish();
+                }
+            });
+        }
+
     }
 
     public class DrawingView extends View {
@@ -137,6 +185,7 @@ public class CanvasDrawing extends AppCompatActivity {
             return true;
         }
 
+        // Bulid new bitmap using existing image and current changes
         public Bitmap saveView() {
             Bitmap drawing = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
             Canvas bindingCanvas = new Canvas(drawing);
@@ -149,5 +198,38 @@ public class CanvasDrawing extends AppCompatActivity {
             draw(bindingCanvas);
             return drawing;
         }
+    }
+
+    // Rebuild bitmap from firebase image
+    public static Bitmap getImageFromData(String bytes) {
+
+        Log.i("from firebase", bytes);
+
+        byte[] decodedString = Base64.decode(bytes.getBytes(), Base64.URL_SAFE);
+
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        //Log.i("test", decodedString.toString());
+
+        return decodedByte;
+
+    }
+
+    // Build encoded string from bitmap for firebase
+    public String getImageData(Bitmap bmp) {
+
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, bao); // bmp is bitmap from user image file
+        bmp.recycle();
+
+        // Background test with hard coded image
+        // Bitmap testBackground = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.addicon);
+        // testBackground.compress(Bitmap.CompressFormat.PNG, 100, bao);
+
+
+        byte[] byteArray = bao.toByteArray();
+        String imageB64 = Base64.encodeToString(byteArray, Base64.URL_SAFE);
+        return imageB64;
     }
 }
