@@ -111,7 +111,7 @@
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Users will be able to collaborate on art related to this collaboration!" />
+                    android:text="Draw collaborate with others on art that reminds you of this location!" />
             </LinearLayout>
 
             <LinearLayout

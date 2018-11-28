@@ -8,6 +8,10 @@ public class ArtItem {
     public String date, time, contact;
     public String drawing;
 
+    public ArtItem() {
+        // No arg constructor for firebase
+    }
+
     public ArtItem(String title, String location, String description) {
         this.title = title;
         this.location = location;

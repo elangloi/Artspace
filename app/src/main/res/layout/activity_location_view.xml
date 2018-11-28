@@ -18,7 +18,7 @@
             android:id="@+id/viewError"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sorry, we encountered an issue! Please try again later." />
+            android:text="Sorry, we couldn't find that art! Please try again later." />
     </RelativeLayout>
 
     <ScrollView
@@ -40,7 +40,14 @@
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="24dp"
+                 />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"/>
 
             <TextView
                 android:id="@+id/textView15"
@@ -50,8 +57,14 @@
 
             <TextView
                 android:id="@+id/location"
+                android:textSize="24dp"
+                android:textColor="#000000"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"/>
 
             <TextView
                 android:id="@+id/textView16"
@@ -61,8 +74,14 @@
 
             <TextView
                 android:id="@+id/description"
+                android:textSize="24dp"
+                android:textColor="#000000"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"/>
 
             <LinearLayout
                 android:id="@+id/inAppCollaboration"
@@ -74,7 +93,13 @@
                     android:id="@+id/textView17"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Collaboration" />
+                    android:text="In App Collaboration" />
+
+                <TextView
+                    android:id="@+id/textView200"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Click on the image to start drawing!" />
 
                 <ImageView
                     android:id="@+id/canvas"
@@ -97,8 +122,14 @@
 
                 <TextView
                     android:id="@+id/contactPhone"
+                    android:textSize="24dp"
+                    android:textColor="#000000"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"/>
 
                 <TextView
                     android:id="@+id/textView20"
@@ -108,8 +139,14 @@
 
                 <TextView
                     android:id="@+id/date"
+                    android:textSize="24dp"
+                    android:textColor="#000000"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"/>
 
                 <TextView
                     android:id="@+id/textView19"
@@ -119,6 +156,8 @@
 
                 <TextView
                     android:id="@+id/time"
+                    android:textSize="24dp"
+                    android:textColor="#000000"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
