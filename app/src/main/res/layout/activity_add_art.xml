@@ -10,9 +10,9 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,6 +22,8 @@
             android:id="@+id/textView10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textColor="#000000"
             android:text="Share an art piece you found with the world or start an artistic collaboration with other users." />
 
         <LinearLayout
@@ -34,7 +36,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="@string/title" />
+                android:textSize="12dp"
+                android:textColor="#000000"
+                android:text="Artwork/Event Name" />
 
             <EditText
                 android:id="@+id/txtTitle"
@@ -55,6 +59,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:textSize="12dp"
+                android:textColor="#000000"
                 android:text="@string/location" />
 
             <EditText
@@ -76,6 +82,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:textSize="12dp"
+                android:textColor="#000000"
                 android:text="@string/description" />
 
             <EditText
@@ -117,6 +125,8 @@
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:textColor="#000000"
                     android:text="Draw and collaborate with others on art! Take a photo to draw on the photo of the location." />
 
                 <View
@@ -147,6 +157,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:textColor="#000000"
                     android:text="Spread the word about an arts collaboration you want to work on in person! Share any dates, time, and contact phone number publically." />
 
                 <LinearLayout
@@ -159,6 +171,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:textSize="12dp"
+                        android:textColor="#000000"
                         android:text="@string/contact" />
 
                     <EditText
@@ -182,6 +196,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:textSize="12dp"
+                        android:textColor="#000000"
                         android:text="@string/date" />
 
                     <EditText
@@ -204,6 +220,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:textSize="12dp"
+                        android:textColor="#000000"
                         android:text="@string/time" />
 
                     <EditText
