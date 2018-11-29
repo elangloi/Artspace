@@ -36,7 +36,10 @@
         <EditText
             android:id="@+id/editText1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="text|textCapSentences"
+            />
 
         <TextView
             android:id="@+id/usernametext"
@@ -45,18 +48,6 @@
             android:textStyle="bold"
             android:text="Username" />
 
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
-
-        <TextView
-            android:id="@+id/passwordtext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="Password" />
 
         <Button
             android:id="@+id/button1"
