@@ -18,6 +18,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Share an art piece you found with the world or start an artistic collaboration with other users." />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -111,7 +117,25 @@
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Draw collaborate with others on art that reminds you of this location!" />
+                    android:text="Draw and collaborate with others on art! Take a photo to draw on the photo of the location." />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"/>
+
+                <Button
+                    android:id="@+id/btnGetLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_blue_light"
+                    android:textColor="@android:color/white"
+                    android:text="Photograph the location!" />
+
+                <ImageView
+                    android:id="@+id/imgLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/sym_def_app_icon" />
             </LinearLayout>
 
             <LinearLayout
@@ -119,6 +143,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Spread the word about an arts collaboration you want to work on in person! Share any dates, time, and contact phone number publically." />
 
                 <LinearLayout
                     android:layout_width="match_parent"

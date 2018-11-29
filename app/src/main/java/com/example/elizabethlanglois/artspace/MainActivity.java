@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, AddArt.class));
         } else if (id == R.id.btnviewart) {
             startActivity(new Intent(MainActivity.this,
-                    LocationView.class).putExtra(LocationView.ART_ITEM_TAG, "-LSQgGgZYCmrn1bDZl6C"));
+                    LocationView.class).putExtra(LocationView.ART_ITEM_TAG, "-LSRiUU075pbkD5TWO0s"));
         } else if(id == R.id.btnmyart){
             startActivity(new Intent(MainActivity.this, MyArt.class));
         } else if(id == R.id.btndraw) {

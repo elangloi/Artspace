@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.util.Log;
 import android.widget.Toast;
 import android.util.Base64;
+import android.widget.ImageView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +30,11 @@ import static android.graphics.Bitmap.Config.ARGB_8888;
 public class AddArt extends AppCompatActivity {
 
     DatabaseReference db;
+    private static final int CAMERA_REQUEST = 1888;
+    ArtItem artItem;
+
+    ImageView photoThumb;
+    Button btnPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,11 @@ public class AddArt extends AppCompatActivity {
         setContentView(R.layout.activity_add_art);
 
         setTitle("Add Art");
+
+        photoThumb = ((ImageView)findViewById(R.id.imgLocation));
+        photoThumb.setVisibility(ImageView.GONE);
+        btnPhoto = ((Button)findViewById(R.id.btnGetLocation));
+        btnPhoto.setVisibility(Button.VISIBLE);
 
         db = FirebaseDatabase.getInstance().getReference("Art_items");
 
@@ -49,7 +60,7 @@ public class AddArt extends AppCompatActivity {
             }
         });
 
-        // Submit button should notify new art created and return to main screen
+        // Submit button should notify new art created and upload to firebase
         Button btnSubmit = (Button)findViewById(R.id.btnSubmit);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,19 +90,56 @@ public class AddArt extends AppCompatActivity {
             }
         });
 
-        // Hide collab details when the user wants to create a drawing
+        // Hide collab details, show drawing when the user wants to create a drawing
+        // Show collab details, hide drawing when the user wants an in person collaboration
         final Switch btnDrawing = (Switch) findViewById(R.id.swInAppCollab);
+        final LinearLayout layoutDraw = (LinearLayout) findViewById(R.id.layoutDraw);
         final LinearLayout layoutNonDraw = (LinearLayout) findViewById(R.id.layoutNonDraw);
         btnDrawing.setChecked(false);
+        layoutDraw.setVisibility(LinearLayout.GONE);
         layoutNonDraw.setVisibility(LinearLayout.VISIBLE);
         btnDrawing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                layoutNonDraw.setVisibility(btnDrawing.isChecked() ?
+                layoutDraw.setVisibility(!btnDrawing.isChecked() ?
                     LinearLayout.GONE: LinearLayout.VISIBLE);
+                layoutNonDraw.setVisibility(!btnDrawing.isChecked() ?
+                    LinearLayout.VISIBLE : LinearLayout.GONE);
             }
         });
 
+        // Allow users to take photos of a location
+        btnPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (checkSelfPermission(android.Manifest.permission.CAMERA)
+                        == getPackageManager().PERMISSION_DENIED) {
+                    requestPermissions(new String[] {android.Manifest.permission.CAMERA}, CAMERA_REQUEST);
+                } else {
+                    // App has permissions
+                    takePicture();
+                }
+
+            }
+        });
+
+        artItem = new ArtItem();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        if (requestCode == CAMERA_REQUEST) {
+            if (grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
+                // Permission is granted
+                takePicture();
+            } else {
+                Toast.makeText(this, "This feature requires access to your camera!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void createArtItem() {
@@ -100,7 +148,9 @@ public class AddArt extends AppCompatActivity {
         String location = ((TextView)findViewById(R.id.txtLocation)).getText().toString();
         String description = ((TextView)findViewById(R.id.txtDescription)).getText().toString();
 
-        ArtItem artItem = new ArtItem(title, location, description);
+        artItem.title = title;
+        artItem.location = location;
+        artItem.description = description;
 
         if(((Switch) findViewById(R.id.swCollab)).isChecked()) {
 
@@ -109,9 +159,12 @@ public class AddArt extends AppCompatActivity {
                 // Set drawing details
                 artItem.setType("drawing");
 
-                // Upload a blank image to firebase
-                Bitmap newDrawing = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-                artItem.drawing = getImageData(newDrawing);
+                // Upload a blank image to firebase if user did not take a picture
+                if(artItem.drawing == null) {
+                    Bitmap newDrawing = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+                    artItem.drawing = getImageData(newDrawing);
+                }
+
             } else {
 
                 // Set collaboration details
@@ -143,7 +196,7 @@ public class AddArt extends AppCompatActivity {
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
 
         bmp.compress(Bitmap.CompressFormat.PNG, 100, bao);
-        bmp.recycle();
+        //bmp.recycle();
 
         // Background test with hard coded image
         // Bitmap testBackground = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.addicon);
@@ -153,5 +206,27 @@ public class AddArt extends AppCompatActivity {
         String imageB64 = Base64.encodeToString(byteArray, Base64.URL_SAFE);
 
         return imageB64;
+    }
+
+    // Camera management
+    private void takePicture() { //you can call this every 5 seconds using a timer or whenever you want
+        Intent cameraIntent = new  Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == android.app.Activity.RESULT_OK) {
+
+            Bitmap picture = (Bitmap) data.getExtras().get("data");
+
+            // Show image and hide picture taking button
+            photoThumb.setVisibility(ImageView.VISIBLE);
+            btnPhoto.setVisibility(Button.GONE);
+
+            photoThumb.setImageBitmap(picture);
+            artItem.drawing = getImageData(picture);
+        }
     }
 }
