@@ -13,13 +13,19 @@ import android.widget.ListView;
 import android.graphics.PorterDuff;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 
 import java.util.ArrayList;
 
 
-public class MyArt extends Activity {
+public class MyArt extends AppCompatActivity {
     ListView listView ;
     boolean myFavoritesShown = false;
     boolean myFoundShown = false;
@@ -70,10 +76,16 @@ public class MyArt extends Activity {
             "Jorge"
     };
 
+    DatabaseReference db;
+    ArtItem artItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("My Art");
+
+
+
 
         setContentView(R.layout.activity_my_art);
 // get access to buttons
@@ -133,6 +145,38 @@ public class MyArt extends Activity {
                 R.drawable.monalisa,
 
         };
+
+        // reference to all the art Items in the database
+        db = FirebaseDatabase.getInstance().getReference("Art_items");
+        /* todo get data from database*/
+        //How do I iterate through list of artItems
+        // Add value event listener to the post
+      /*  ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get artitem object
+                artItem = dataSnapshot.getValue(ArtItem.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+*/
+   /*
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            artItem = snapshot.getValue(ArtItem.class);
+                            System.out.println("Title: "+artItem.getTitle());
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+*/
         /* Define an adapter for each listView*/
       final  MyArtListView myFavoritesAdapter=new MyArtListView(this, myFavoritesMuralNames, myFavoritesArtistNames,myFavoritesimgid);
       final  MyArtListView myFoundAdapter=new MyArtListView(this, myFoundMuralNames, myFoundArtistNames,myFoundimgid);
@@ -177,6 +221,7 @@ public class MyArt extends Activity {
 
 
     }
+
 
 
 }

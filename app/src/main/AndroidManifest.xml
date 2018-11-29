@@ -19,11 +19,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".AddArt" />
-        <activity android:name=".MyArt" />
-        <activity android:name=".LocationView" />
-        <activity android:name=".CanvasDrawing"/>
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".AddArt"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".MyArt"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".LocationView"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".CanvasDrawing"
+            android:parentActivityName=".MainActivity">
+        </activity>
         <activity android:name=".ExploreActivity"
             android:parentActivityName=".MainActivity">
         </activity>
