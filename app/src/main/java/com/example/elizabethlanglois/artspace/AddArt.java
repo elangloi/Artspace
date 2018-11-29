@@ -1,8 +1,10 @@
 package com.example.elizabethlanglois.artspace;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
@@ -43,12 +45,19 @@ public class AddArt extends AppCompatActivity {
 
     Geocoder geocoder;
 
+    SharedPreferences sp;
+    String username;
+    String itemID;
+    DatabaseReference userDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_art);
 
         setTitle("Add Art");
+
+        sp = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
 
         photoThumb = ((ImageView)findViewById(R.id.imgLocation));
         photoThumb.setVisibility(ImageView.GONE);
@@ -73,8 +82,41 @@ public class AddArt extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(createArtItem()) {
-                    //TODO Connect created art item to the user who is logged in
+                itemID = createArtItem();
+                if(itemID != null) {
+
+                    // Connect created art item to the user who is logged in
+                    username = sp.getString(LoginActivity.MY_USERNAME, null);
+                    if(username != null) {
+                       // Get a pointer to the user's created items
+                       userDB = FirebaseDatabase.getInstance().getReference("Users");
+                       userDB.addListenerForSingleValueEvent(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                               //Retrieve the user data list
+                               UserItem currUser = dataSnapshot.child(username).getValue(UserItem.class);
+
+                               if(currUser.created_art == null) {
+                                   currUser.created_art = new ArrayList<String>();
+                               }
+
+                               // Appends the item to the list
+                               currUser.created_art.add(itemID);
+
+                               // Null out the used reference for safety
+                               itemID = null;
+
+                               // Update the list on firebase
+                               userDB.child(username).setValue(currUser);
+                           }
+
+                           @Override
+                           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                           }
+                       });
+
+                    }
 
                     setResult(AddArt.RESULT_OK);
                     finish();
@@ -152,7 +194,7 @@ public class AddArt extends AppCompatActivity {
         }
     }
 
-    public boolean createArtItem() {
+    public String createArtItem() {
         // Retrieve basic information
         String title = ((TextView)findViewById(R.id.txtTitle)).getText().toString();
         String location = ((TextView)findViewById(R.id.txtLocation)).getText().toString();
@@ -163,7 +205,7 @@ public class AddArt extends AppCompatActivity {
                 || description == null || description.isEmpty()) {
             Toast.makeText(this, "Please provide title, location, and description",
                     Toast.LENGTH_LONG).show();
-            return false;
+            return null;
         }
 
         artItem.title = title;
@@ -220,7 +262,7 @@ public class AddArt extends AppCompatActivity {
         String id = db.push().getKey();
         db.child(id).setValue(artItem);
         Toast.makeText(this, "Art added!", Toast.LENGTH_SHORT).show();
-        return true;
+        return id;
 
     }
 
