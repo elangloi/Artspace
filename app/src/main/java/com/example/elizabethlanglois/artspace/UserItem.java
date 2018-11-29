@@ -5,7 +5,7 @@ import java.util.List;
 public class UserItem {
 
     public String username, password;
-    public List<Double> favorites, created_art;
+    public List<String> favorites, created_art;
 
     public UserItem() {
         // For firebase
