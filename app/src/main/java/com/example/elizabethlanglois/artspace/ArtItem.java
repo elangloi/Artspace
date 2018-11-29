@@ -7,6 +7,7 @@ public class ArtItem {
     public String title, location, description, type;
     public String date, time, contact;
     public String drawing;
+    public double latitude, longitude;
 
     public ArtItem() {
         // No arg constructor for firebase

@@ -2,6 +2,7 @@ package com.example.elizabethlanglois.artspace;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.widget.Toast;
 import android.util.Base64;
 import android.widget.ImageView;
+import android.location.Geocoder;
+import android.location.Address;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.*;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.graphics.Bitmap.Config.ARGB_8888;
 
@@ -35,6 +40,8 @@ public class AddArt extends AppCompatActivity {
 
     ImageView photoThumb;
     Button btnPhoto;
+
+    Geocoder geocoder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +73,13 @@ public class AddArt extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                createArtItem();
+                if(createArtItem()) {
+                    //TODO Connect created art item to the user who is logged in
 
-                //TODO Connect created art item to the user who is logged in
+                    setResult(AddArt.RESULT_OK);
+                    finish();
+                }
 
-                setResult(AddArt.RESULT_OK);
-                finish();
             }
         });
 
@@ -126,6 +134,8 @@ public class AddArt extends AppCompatActivity {
 
         artItem = new ArtItem();
 
+        geocoder = new Geocoder(getApplicationContext());
+
     }
 
     @Override
@@ -142,15 +152,38 @@ public class AddArt extends AppCompatActivity {
         }
     }
 
-    public void createArtItem() {
+    public boolean createArtItem() {
         // Retrieve basic information
         String title = ((TextView)findViewById(R.id.txtTitle)).getText().toString();
         String location = ((TextView)findViewById(R.id.txtLocation)).getText().toString();
         String description = ((TextView)findViewById(R.id.txtDescription)).getText().toString();
 
+        // If any of the required fields are null or empty, show err
+        if(title == null || title.isEmpty() || location == null || location.isEmpty()
+                || description == null || description.isEmpty()) {
+            Toast.makeText(this, "Please provide title, location, and description",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
         artItem.title = title;
         artItem.location = location;
         artItem.description = description;
+
+        try {
+            // Try to pin location entered by user
+            List<Address> locations = geocoder.getFromLocationName(location, 1);
+            if(locations != null && !locations.isEmpty()) {
+                Address addr = locations.get(0);
+                artItem.latitude = addr.getLatitude();
+                artItem.longitude = addr.getLongitude();
+            }
+
+        } catch (Exception ex) {
+            // No location provided
+            artItem.latitude = 0;
+            artItem.longitude = 0;
+        }
 
         if(((Switch) findViewById(R.id.swCollab)).isChecked()) {
 
@@ -187,6 +220,7 @@ public class AddArt extends AppCompatActivity {
         String id = db.push().getKey();
         db.child(id).setValue(artItem);
         Toast.makeText(this, "Art added!", Toast.LENGTH_SHORT).show();
+        return true;
 
     }
 
