@@ -11,15 +11,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.graphics.Color;
 
+import java.util.ArrayList;
+
 
 public class MyArtListView extends ArrayAdapter<String> {
 
     private final Activity context;
-    private final String[] maintitle;
-    private final String[] subtitle;
+    private final ArrayList<String> maintitle;
+    private final ArrayList<String> subtitle;
     private final Integer[] imgid;
 
-    public MyArtListView(Activity context, String[] maintitle,String[] subtitle, Integer[] imgid) {
+    public MyArtListView(Activity context, ArrayList<String> maintitle,ArrayList<String> subtitle, Integer[] imgid) {
         super(context, R.layout.my_list_item, maintitle);
         // TODO Auto-generated constructor stub
 
@@ -38,9 +40,9 @@ public class MyArtListView extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         TextView subtitleText = (TextView) rowView.findViewById(R.id.subtitle);
 
-        titleText.setText(maintitle[position]);
+        titleText.setText(maintitle.get(position));
         imageView.setImageResource(imgid[0]);
-        subtitleText.setText(subtitle[position]);
+        subtitleText.setText(subtitle.get(position));
 
         if(position %2 == 1)
         {
