@@ -94,6 +94,8 @@ public class MyArt extends AppCompatActivity {
     SharedPreferences sp;
     UserItem currUser;
     List<String> createdArt;
+    List<String> favoriteArt;
+
     ArtItem artItem;
     String currItem;
 
@@ -101,6 +103,8 @@ public class MyArt extends AppCompatActivity {
     ArrayList<String> foundDescriptions;
     ArrayList<String> collabTitles;
     ArrayList<String> collabDescriptions;
+    ArrayList<String> favoriteTitles;
+    ArrayList<String> favoriteDescriptions;
 
 
 
@@ -111,6 +115,8 @@ public class MyArt extends AppCompatActivity {
         sp = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
 
         createdArt = new ArrayList<>();
+        favoriteArt = new ArrayList<>();
+
 
 
 
@@ -192,6 +198,10 @@ public class MyArt extends AppCompatActivity {
                         createdArt = currUser.created_art; //createdArt is a list of the users created art -> now look this up on their art_items databse
                         Log.i("CreatedArt",currUser.created_art.toString());
                     }
+                    if(currUser.favorites != null) { // if user has created some art
+                        favoriteArt = currUser.favorites; //createdArt is a list of the users created art -> now look this up on their art_items databse
+                        Log.i("favoriteArt",currUser.favorites.toString());
+                    }
                 }
 
                 @Override
@@ -217,7 +227,7 @@ public class MyArt extends AppCompatActivity {
                     for (int i = 0; i < createdArt.size(); i++) {
                         currItem = createdArt.get(i);
                         artItem = dataSnapshot.child(currItem).getValue(ArtItem.class);
-                        if(artItem.type.equals("collaboration")) {
+                        if(artItem.type.equals("collaboration") || artItem.type.equals("drawing")) {
                             if (artItem.title != null) {
                                 collabTitles.add(artItem.title);
                             } else {
@@ -253,12 +263,45 @@ public class MyArt extends AppCompatActivity {
                 }
             });
         }
+        if(favoriteArt != null) {  //if user has favorite Art
+            // instantiate arraylists that hold each value
+            favoriteTitles = new ArrayList<>();
+            favoriteDescriptions = new ArrayList<>();
 
-//todo: add myFavorites, add drawings, add default value if no art yet added, clean up style
+            // get a reference to Art_items
+            dbItems = FirebaseDatabase.getInstance().getReference("Art_items");
+            // iterate through all the art Items in the database
+            dbItems.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //place each art item itnto it's corresponding array
+                    for (int i = 0; i < favoriteArt.size(); i++) {
+                        currItem = favoriteArt.get(i);
+                        artItem = dataSnapshot.child(currItem).getValue(ArtItem.class);
+                        if (artItem.title != null) {
+                            favoriteTitles.add(artItem.title);
+                        } else {
+                            favoriteTitles.add("No Title");
+                        }
+                        if (artItem.description != null) {
+                            favoriteDescriptions.add(artItem.description);
+                        } else {
+                            favoriteDescriptions.add("No Description");
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+//todo:  add drawings, add default value if no art yet added, clean up style
 
 
         /* Define an adapter for each listView*/
-    //  final  MyArtListView myFavoritesAdapter=new MyArtListView(this, myFavoritesMuralNames, myFavoritesArtistNames,myFavoritesimgid);
+      final  MyArtListView myFavoritesAdapter=new MyArtListView(this, favoriteTitles, favoriteDescriptions,myFavoritesimgid);
       final  MyArtListView myFoundAdapter=new MyArtListView(this, foundTitles, foundDescriptions,myFoundimgid);
       final  MyArtListView myCollabsAdapter=new MyArtListView(this, collabTitles, collabDescriptions,myCollabsimgid);
 
@@ -269,7 +312,7 @@ public class MyArt extends AppCompatActivity {
                 btnFound.getBackground().setColorFilter(getResources().getColor(R.color.holo_blue_light),PorterDuff.Mode.SRC_IN);
                 btnCollabs.getBackground().setColorFilter(getResources().getColor(R.color.holo_blue_light),PorterDuff.Mode.SRC_IN);
                     /* show myFavorites Listview */
-               //     listView.setAdapter(myFavoritesAdapter);
+                    listView.setAdapter(myFavoritesAdapter);
                     myFavoritesShown = true;
                     btnFavorites.getBackground().setColorFilter(getResources().getColor(R.color.colorAccent),PorterDuff.Mode.SRC_IN);
             }
