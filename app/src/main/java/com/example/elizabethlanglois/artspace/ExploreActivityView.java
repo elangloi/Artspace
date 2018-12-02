@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,6 +43,8 @@ public class ExploreActivityView extends ArrayAdapter<String> {
     private String itemID;
     private ImageButton vFavorite;
 
+    private TextView ResultsText;
+
     public ExploreActivityView(Activity context, ArrayList<String> maintitle,ArrayList<String> subtitle, ArrayList<Bitmap> img,
                                ArrayList<String> type,ArrayList<String> date,ArrayList<String> time,ArrayList<String> location,ArrayList<String> item_id,
                                Integer[] a) {
@@ -69,44 +72,70 @@ public class ExploreActivityView extends ArrayAdapter<String> {
         TextView typeText = (TextView) rowView.findViewById(R.id.type);
         TextView dateTimeText = (TextView) rowView.findViewById(R.id.datetime);
         TextView locationText = (TextView) rowView.findViewById(R.id.location);
+        vFavorite = rowView.findViewById(R.id.btnFavorite);
 
-        titleText.setText(maintitle.get(position));
-        if(img.get(position) != null) {
-            //imageView.setImageResource(a[0]);
-            imageView.setImageBitmap(img.get(position));
-        }
-        subtitleText.setText(subtitle.get(position));
-        typeText.setText(type.get(position));
+        if(!maintitle.get(0).equals("No results found")) {
+            titleText.setText(maintitle.get(position));
+            if (img.get(position) != null) {
+                //imageView.setImageResource(a[0]);
+                imageView.setVisibility(View.VISIBLE);
+                imageView.setImageBitmap(img.get(position));
+            }
+            subtitleText.setVisibility(View.VISIBLE);
+            subtitleText.setText(subtitle.get(position));
+            typeText.setVisibility(View.VISIBLE);
+            vFavorite.setVisibility(View.VISIBLE);
+            typeText.setText(type.get(position));
 
-        // Change depending on if location exists
-        if(!location.get(position).equals("")){
-            locationText.setVisibility(View.VISIBLE);
-            String upper = location.get(position).substring(0, 1).toUpperCase() + location.get(position).substring(1);
-            locationText.setText("Location: "+ upper);
-        }else{
-            locationText.setVisibility(View.GONE);
-            locationText.setText("");
-        }
+            // Change depending on if location exists
+            if (!location.get(position).equals("")) {
+                locationText.setVisibility(View.VISIBLE);
+                String upper = location.get(position).substring(0, 1).toUpperCase() + location.get(position).substring(1);
+                locationText.setText("Location: " + upper);
+            } else {
+                locationText.setVisibility(View.GONE);
+                locationText.setText("");
+            }
 
-        // Change text depending on whether date and time is present
-        if(type.get(position).equals("Collaboration")) {
-            dateTimeText.setVisibility(View.VISIBLE);
-            if (date.get(position) != null && !date.get(position).equals("")) {
-                if (time.get(position) != null && !time.get(position).equals("")) {
-                    dateTimeText.setText(date.get(position) + " at " + time.get(position));
+            // Change text depending on whether date and time is present
+            if (type.get(position).equals("Collaboration")) {
+                dateTimeText.setVisibility(View.VISIBLE);
+                if (date.get(position) != null && !date.get(position).equals("")) {
+                    if (time.get(position) != null && !time.get(position).equals("")) {
+                        dateTimeText.setText(date.get(position) + " at " + time.get(position));
+                    } else {
+                        dateTimeText.setText("" + date.get(position));
+                    }
                 } else {
-                    dateTimeText.setText("" + date.get(position));
+                    if (time.get(position) != null && !time.get(position).equals("")) {
+                        dateTimeText.setText("" + time.get(position));
+                    } else {
+                        dateTimeText.setText("Time information unavailable");
+                    }
                 }
             } else {
-                if (time.get(position) != null && !time.get(position).equals("")) {
-                    dateTimeText.setText("" + time.get(position));
-                } else {
-                    dateTimeText.setText("Time information unavailable");
-                }
+                dateTimeText.setVisibility(View.GONE);
+                dateTimeText.setText("");
             }
         }else{
+            titleText.setText(maintitle.get(position));
+
+            imageView.setVisibility(View.GONE);
+            imageView.setImageBitmap(img.get(position));
+
+            locationText.setVisibility(View.GONE);
+            subtitleText.setText("");
+
+            locationText.setVisibility(View.GONE);
+            typeText.setText("");
+
+            locationText.setVisibility(View.GONE);
+            locationText.setText("");
+
             dateTimeText.setVisibility(View.GONE);
             dateTimeText.setText("");
+
+            vFavorite.setVisibility(View.GONE);
         }
 
         if(position %2 == 1)
@@ -125,7 +154,6 @@ public class ExploreActivityView extends ArrayAdapter<String> {
         sp = getContext().getSharedPreferences(LoginActivity.MY_PREFS_NAME, Context.MODE_PRIVATE);
         username = sp.getString(LoginActivity.MY_USERNAME, null);
         itemID = item_id.get(position);
-        vFavorite = rowView.findViewById(R.id.btnFavorite);
 
         // TODO Button doesnt change on the spot
         vFavorite.setOnClickListener(new View.OnClickListener() {
