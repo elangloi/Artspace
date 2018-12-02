@@ -101,7 +101,6 @@ public class MyArt extends AppCompatActivity {
         };
        //get current user
         username = sp.getString(LoginActivity.MY_USERNAME, null);
-        Log.i("username",username.toString());
         if(username != null) {
             // Get a pointer to the user's created items
             dbUsers = FirebaseDatabase.getInstance().getReference("Users");
@@ -113,11 +112,9 @@ public class MyArt extends AppCompatActivity {
                     Log.i("CurrUser",currUser.toString());
                     if(currUser.created_art != null) { // if user has created some art
                         createdArt = currUser.created_art; //createdArt is a list of the users created art -> now look this up on their art_items databse
-                        Log.i("CreatedArt",currUser.created_art.toString());
                     }
                     if(currUser.favorites != null) { // if user has created some art
                         favoriteArt = currUser.favorites; //createdArt is a list of the users created art -> now look this up on their art_items databse
-                        Log.i("favoriteArt",currUser.favorites.toString());
                     }
                 }
                 @Override
