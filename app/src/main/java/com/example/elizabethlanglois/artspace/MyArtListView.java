@@ -24,13 +24,10 @@ public class MyArtListView extends ArrayAdapter<String> {
 
     public MyArtListView(Activity context, ArrayList<String> maintitle,ArrayList<String> subtitle, ArrayList<Bitmap> imgid) {
         super(context, R.layout.my_list_item, maintitle);
-        // TODO Auto-generated constructor stub
-
         this.context=context;
         this.maintitle=maintitle;
         this.subtitle=subtitle;
         this.imgid=imgid;
-
     }
 
     public View getView(int position,View view,ViewGroup parent) {
@@ -42,12 +39,12 @@ public class MyArtListView extends ArrayAdapter<String> {
         TextView subtitleText = (TextView) rowView.findViewById(R.id.subtitle);
 
         titleText.setText(maintitle.get(position));
-        if(imgid.get(position) != null)
-        imageView.setImageBitmap(imgid.get(position));
+        if(imgid.size() != 0) {
+            imageView.setImageBitmap(imgid.get(position));
+        }
         subtitleText.setText(subtitle.get(position));
 
-        if(position %2 == 1)
-        {
+        if(position %2 == 1) {
             // Set a background color for ListView regular row/item
             rowView.setBackgroundColor(Color.parseColor("#DCDCDC"));
         }else{
@@ -56,9 +53,7 @@ public class MyArtListView extends ArrayAdapter<String> {
             subtitleText.setTextColor(Color.parseColor("#FFFFFF"));
 
         }
-
         return rowView;
-
     };
 }
 
