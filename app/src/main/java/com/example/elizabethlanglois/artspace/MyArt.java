@@ -5,6 +5,8 @@ import android.app.ListActivity;
 
 import java.lang.reflect.Array;
 import java.util.*;
+
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -19,15 +21,12 @@ import android.graphics.PorterDuff;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-
 
 import java.util.ArrayList;
 
@@ -42,51 +41,6 @@ public class MyArt extends AppCompatActivity {
     // key for above preference.
     public static final String MY_USERNAME = "Username";
 
-    // Defined Array values to show in ListView
-    String[] myFavoritesvalues = new String[] { "Tuttomondo - Keith Haring",
-            "Nelson Mandela Mural - Shepard Fairey",
-            "Etnias - Eduardo Kobra",
-            "The Giant of Boston - Os Gemeos",
-            "Mural in Maracay - Koz Dos",
-            "The Golden Elephant - Dzia",
-            "Along The Way - Alice Pasquini",
-            "Mural in Aspen - Christina Angelina",
-            "Etnias - Eduardo Kobra",
-            "The Giant of Boston - Os Gemeos",
-            "Mural in Maracay - Koz Dos",
-            "The Golden Elephant - Dzia",
-            "Along The Way - Alice Pasquini",
-            "Mural in Aspen - Christina Angelina",
-            "Etnias - Eduardo Kobra",
-            "The Giant of Boston - Os Gemeos",
-            "Mural in Maracay - Koz Dos",
-            "The Golden Elephant - Dzia",
-            "Along The Way - Alice Pasquini",
-            "Mural in Aspen - Christina Angelina"
-    };
-    String[] myFoundvalues = new String[] { "Fake - FakeData",
-            "Nelson Mandela Mural - Shepard Fairey",
-            "Etnias - Eduardo Kobra",
-            "The Giant of Boston - Os Gemeos",
-            "Mural in Maracay - Koz Dos",
-            "The Golden Elephant - Dzia",
-            "Along The Way - Alice Pasquini"
-    };
-    String[] myCollabvalues = new String[] { "Keith Haring",
-            "Shepard Fairey",
-            "Eduardo Kobra",
-            "Os Gemeos",
-            "Koz Dos",
-            "Dzia",
-            "Alice Pasquini",
-            "Christina Angelina",
-            "Eduardo Kobra",
-            "Jimmy",
-            "Roberta",
-            "Phillip",
-            "Jorge"
-    };
-
     DatabaseReference dbUsers;
     DatabaseReference dbItems;
     String username;
@@ -95,32 +49,30 @@ public class MyArt extends AppCompatActivity {
     UserItem currUser;
     List<String> createdArt;
     List<String> favoriteArt;
+    CanvasDrawing canvasDrawing;
 
     ArtItem artItem;
     String currItem;
 
     ArrayList<String> foundTitles;
     ArrayList<String> foundDescriptions;
+    ArrayList<Bitmap> foundImages;
     ArrayList<String> collabTitles;
     ArrayList<String> collabDescriptions;
+    ArrayList<Bitmap> collabImages;
     ArrayList<String> favoriteTitles;
     ArrayList<String> favoriteDescriptions;
-
-
+    ArrayList<Bitmap> favoriteImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("My Art");
-        sp = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
+        setContentView(R.layout.activity_my_art);
 
+        sp = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
         createdArt = new ArrayList<>();
         favoriteArt = new ArrayList<>();
-
-
-
-
-        setContentView(R.layout.activity_my_art);
         // get access to buttons
         final Button btnFavorites = (Button) findViewById(R.id.btnFavorites);
         final Button btnFound = (Button) findViewById(R.id.btnFound);
@@ -134,57 +86,21 @@ public class MyArt extends AppCompatActivity {
         // Get ListView object from xml
         listView = (ListView) findViewById(R.id.list);
 
-        // MyFavorites fake data
-        String[] myFavoritesMuralNames ={
-                "Tuttomondo","Nelson Mandela Mural", "Etnias","The Giant of Boston",
-                "Mural in Maracay", "Mural in Maracay","The Golden Elephant","Along The Way",
-                "Mural in Aspen", "Tuttomondo","Nelson Mandela Mural", "Etnias",
-                "The Giant of Boston", "Mural in Maracay", "Mural in Maracay","The Golden Elephant"
-        };
 
-        String[] myFavoritesArtistNames ={
-                "Keith Haring","Eduardo Kobra", "Os Gemeos","Koz Dos", "Dzia", "Alice Pasquini",
-                "Christina Angelina", "Eduardo Kobra", "Jimmy", "Roberta", "Phillip", "Jorge",
-                "Keith Haring","Eduardo Kobra", "Os Gemeos","Koz Dos"
-        };
         Integer[] myFavoritesimgid={
                 R.drawable.monalisa,
 
-        };
-        // MyFound fake data
-        String[] myFoundMuralNames ={
-                "Tuttomondo","Nelson Mandela Mural", "Etnias","The Giant of Boston",
-                "Mural in Maracay", "Mural in Maracay","The Golden Elephant","Along The Way",
-
-        };
-
-        String[] myFoundArtistNames ={
-                "Keith Haring","Eduardo Kobra", "Os Gemeos","Koz Dos", "Dzia", "Alice Pasquini",
-                "Christina Angelina", "Eduardo Kobra",
         };
         Integer[] myFoundimgid={
                 R.drawable.monalisa,
 
         };
-        // MyCollabs fake data
-        String[] myCollabsMuralNames ={
-                "Tuttomondo","Nelson Mandela Mural"
-        };
-
-        String[] myCollabsArtistNames ={
-                "Keith Haring","Eduardo Kobra"
-        };
         Integer[] myCollabsimgid={
                 R.drawable.monalisa,
 
         };
-       /* dbUsers = FirebaseDatabase.getInstance().getReference("Users");
-        // get current user
-
-        dbUsers.child(name);*/
        //get current user
         username = sp.getString(LoginActivity.MY_USERNAME, null);
-        Log.i("username",username.toString());
         if(username != null) {
             // Get a pointer to the user's created items
             dbUsers = FirebaseDatabase.getInstance().getReference("Users");
@@ -196,27 +112,24 @@ public class MyArt extends AppCompatActivity {
                     Log.i("CurrUser",currUser.toString());
                     if(currUser.created_art != null) { // if user has created some art
                         createdArt = currUser.created_art; //createdArt is a list of the users created art -> now look this up on their art_items databse
-                        Log.i("CreatedArt",currUser.created_art.toString());
                     }
                     if(currUser.favorites != null) { // if user has created some art
                         favoriteArt = currUser.favorites; //createdArt is a list of the users created art -> now look this up on their art_items databse
-                        Log.i("favoriteArt",currUser.favorites.toString());
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
                 }
             });
-
         }
         if(createdArt != null) {  //if user has created Art
             // instantiate arraylists that hold each value
             foundTitles = new ArrayList<>();
             foundDescriptions = new ArrayList<>();
+            foundImages = new ArrayList<>();
             collabTitles = new ArrayList<>();
             collabDescriptions = new ArrayList<>();
+            collabImages = new ArrayList<>();
             // get a reference to Art_items
             dbItems = FirebaseDatabase.getInstance().getReference("Art_items");
             // iterate through all the art Items in the database
@@ -238,6 +151,13 @@ public class MyArt extends AppCompatActivity {
                             } else {
                                 collabDescriptions.add("No Description");
                             }
+                            if (artItem.drawing != null) {
+                                //insert correct drawing
+                                collabImages.add(canvasDrawing.getImageFromData(artItem.drawing));
+                            }else{
+                                collabImages.add(null);
+                            }
+
                         }else{
                             if (artItem.title != null) {
                                 foundTitles.add(artItem.title);
@@ -249,17 +169,17 @@ public class MyArt extends AppCompatActivity {
                             } else {
                                 foundDescriptions.add("No Description");
                             }
+                            if (artItem.drawing != null) {
+                                foundImages.add(canvasDrawing.getImageFromData(artItem.drawing));
+                            }else{
+                                foundImages.add(null);
+                            }
+
                         }
                     }
-
-                    //    currItem = dataSnapshot.child(username).getValue(ArtItem.class);
-                    //    createdArt = currUser.created_art; //createdArt is a list of the users created art -> now look this up on their art_items databse
-
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
                 }
             });
         }
@@ -267,7 +187,7 @@ public class MyArt extends AppCompatActivity {
             // instantiate arraylists that hold each value
             favoriteTitles = new ArrayList<>();
             favoriteDescriptions = new ArrayList<>();
-
+            favoriteImages = new ArrayList<>();
             // get a reference to Art_items
             dbItems = FirebaseDatabase.getInstance().getReference("Art_items");
             // iterate through all the art Items in the database
@@ -288,22 +208,23 @@ public class MyArt extends AppCompatActivity {
                         } else {
                             favoriteDescriptions.add("No Description");
                         }
+                        if (artItem.drawing != null) {
+                            favoriteImages.add(canvasDrawing.getImageFromData(artItem.drawing));
+                        }else{
+                            favoriteImages.add(null);
+                        }
                     }
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
                 }
             });
         }
-
 //todo:  add drawings, add default value if no art yet added, clean up style
-
-
         /* Define an adapter for each listView*/
-      final  MyArtListView myFavoritesAdapter=new MyArtListView(this, favoriteTitles, favoriteDescriptions,myFavoritesimgid);
-      final  MyArtListView myFoundAdapter=new MyArtListView(this, foundTitles, foundDescriptions,myFoundimgid);
-      final  MyArtListView myCollabsAdapter=new MyArtListView(this, collabTitles, collabDescriptions,myCollabsimgid);
+      final  MyArtListView myFavoritesAdapter=new MyArtListView(this, favoriteTitles, favoriteDescriptions,favoriteImages);
+      final  MyArtListView myFoundAdapter=new MyArtListView(this, foundTitles, foundDescriptions,foundImages);
+      final  MyArtListView myCollabsAdapter=new MyArtListView(this, collabTitles, collabDescriptions,collabImages);
 
         // setOnClickListener for myFavorites
         btnFavorites.setOnClickListener(new View.OnClickListener() {
@@ -325,8 +246,6 @@ public class MyArt extends AppCompatActivity {
                 btnCollabs.getBackground().setColorFilter(getResources().getColor(R.color.holo_blue_light),PorterDuff.Mode.SRC_IN);
                 listView.setAdapter(myFoundAdapter);
                 btnFound.getBackground().setColorFilter(getResources().getColor(R.color.colorAccent),PorterDuff.Mode.SRC_IN);
-
-
             }
         });
         // setOnClickListener for myCollabs
@@ -337,8 +256,6 @@ public class MyArt extends AppCompatActivity {
                 btnFound.getBackground().setColorFilter(getResources().getColor(R.color.holo_blue_light),PorterDuff.Mode.SRC_IN);
                 listView.setAdapter(myCollabsAdapter);
                 btnCollabs.getBackground().setColorFilter(getResources().getColor(R.color.colorAccent),PorterDuff.Mode.SRC_IN);
-
-
             }
         });
 
