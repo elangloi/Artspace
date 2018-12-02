@@ -1,8 +1,10 @@
 package com.example.elizabethlanglois.artspace;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -13,12 +15,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class LocationView extends AppCompatActivity {
 
@@ -39,6 +45,11 @@ public class LocationView extends AppCompatActivity {
     TextView vDate;
     TextView vTime;
     ImageView vCanvas;
+    Button vFavorite;
+
+    SharedPreferences sp;
+    String username;
+    DatabaseReference userDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +57,8 @@ public class LocationView extends AppCompatActivity {
         setContentView(R.layout.activity_location_view);
 
         setTitle("View Art");
+
+        sp = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
 
         ScrollView vScoll = findViewById(R.id.scrollview);
         RelativeLayout vErr = findViewById(R.id.layoutErr);
@@ -67,6 +80,60 @@ public class LocationView extends AppCompatActivity {
             vDate = findViewById(R.id.date);
             vTime = findViewById(R.id.time);
             vCanvas = findViewById(R.id.canvas);
+            vFavorite = findViewById(R.id.btnFavorite);
+
+            vFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Retrieve firebase favorite status of current user
+                    username = sp.getString(LoginActivity.MY_USERNAME, null);
+                    if(username != null) {
+                        userDB = FirebaseDatabase.getInstance().getReference("Users");
+                        userDB.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                // If it is a favorite, remove it
+                                // If it isn't a favorite, add it
+                                UserItem currUser = dataSnapshot.child(username).getValue(UserItem.class);
+
+                                if(currUser.favorites == null) {
+                                    currUser.favorites = new ArrayList<String>();
+                                }
+
+                                if(!currUser.favorites.contains(itemID)) {
+                                    // Add the favorite
+                                    currUser.favorites.add(itemID);
+
+                                    // Adjust the button text
+                                    vFavorite.setText("Remove Favorite");
+
+                                    // Show confirmatory toast
+                                    Toast.makeText(getApplicationContext(), "Added to favorites!", Toast.LENGTH_SHORT);
+                                } else {
+                                    // Remove the favorite
+                                    currUser.favorites.remove(itemID);
+
+                                    // Adjust the button text
+                                    vFavorite.setText("Add to Favorites");
+
+                                    // Show confirmatory toast
+                                    Toast.makeText(getApplicationContext(), "Removed from favorites!", Toast.LENGTH_SHORT);
+                                }
+
+                                // Update the new value in firebase
+                                userDB.child(username).setValue(currUser);
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // Do nothing
+                            }
+                        });
+                    }
+
+                }
+            });
 
             populateLayout();
         } else {

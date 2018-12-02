@@ -2,8 +2,13 @@ package com.example.elizabethlanglois.artspace;
 
 import android.app.Activity;
 import android.app.ListActivity;
+
+import java.lang.reflect.Array;
+import java.util.*;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -12,18 +17,30 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.graphics.PorterDuff;
 import android.widget.Toast;
+import android.content.SharedPreferences;
 
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 
 import java.util.ArrayList;
 
 
-public class MyArt extends Activity {
+public class MyArt extends AppCompatActivity {
     ListView listView ;
     boolean myFavoritesShown = false;
     boolean myFoundShown = false;
     boolean myCollabsShown = false;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+
+    // key for above preference.
+    public static final String MY_USERNAME = "Username";
 
     // Defined Array values to show in ListView
     String[] myFavoritesvalues = new String[] { "Tuttomondo - Keith Haring",
@@ -70,13 +87,41 @@ public class MyArt extends Activity {
             "Jorge"
     };
 
+    DatabaseReference dbUsers;
+    DatabaseReference dbItems;
+    String username;
+    String itemID;
+    SharedPreferences sp;
+    UserItem currUser;
+    List<String> createdArt;
+    List<String> favoriteArt;
+
+    ArtItem artItem;
+    String currItem;
+
+    ArrayList<String> foundTitles;
+    ArrayList<String> foundDescriptions;
+    ArrayList<String> collabTitles;
+    ArrayList<String> collabDescriptions;
+    ArrayList<String> favoriteTitles;
+    ArrayList<String> favoriteDescriptions;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("My Art");
+        sp = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
+
+        createdArt = new ArrayList<>();
+        favoriteArt = new ArrayList<>();
+
+
+
 
         setContentView(R.layout.activity_my_art);
-// get access to buttons
+        // get access to buttons
         final Button btnFavorites = (Button) findViewById(R.id.btnFavorites);
         final Button btnFound = (Button) findViewById(R.id.btnFound);
         final Button btnCollabs = (Button) findViewById(R.id.btnCollabs);
@@ -133,10 +178,132 @@ public class MyArt extends Activity {
                 R.drawable.monalisa,
 
         };
+       /* dbUsers = FirebaseDatabase.getInstance().getReference("Users");
+        // get current user
+
+        dbUsers.child(name);*/
+       //get current user
+        username = sp.getString(LoginActivity.MY_USERNAME, null);
+        Log.i("username",username.toString());
+        if(username != null) {
+            // Get a pointer to the user's created items
+            dbUsers = FirebaseDatabase.getInstance().getReference("Users");
+            dbUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //Retrieve the user data list
+                    currUser = dataSnapshot.child(username).getValue(UserItem.class);
+                    Log.i("CurrUser",currUser.toString());
+                    if(currUser.created_art != null) { // if user has created some art
+                        createdArt = currUser.created_art; //createdArt is a list of the users created art -> now look this up on their art_items databse
+                        Log.i("CreatedArt",currUser.created_art.toString());
+                    }
+                    if(currUser.favorites != null) { // if user has created some art
+                        favoriteArt = currUser.favorites; //createdArt is a list of the users created art -> now look this up on their art_items databse
+                        Log.i("favoriteArt",currUser.favorites.toString());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+        if(createdArt != null) {  //if user has created Art
+            // instantiate arraylists that hold each value
+            foundTitles = new ArrayList<>();
+            foundDescriptions = new ArrayList<>();
+            collabTitles = new ArrayList<>();
+            collabDescriptions = new ArrayList<>();
+            // get a reference to Art_items
+            dbItems = FirebaseDatabase.getInstance().getReference("Art_items");
+            // iterate through all the art Items in the database
+            dbItems.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //place each art item itnto it's corresponding array
+                    for (int i = 0; i < createdArt.size(); i++) {
+                        currItem = createdArt.get(i);
+                        artItem = dataSnapshot.child(currItem).getValue(ArtItem.class);
+                        if(artItem.type.equals("collaboration") || artItem.type.equals("drawing")) {
+                            if (artItem.title != null) {
+                                collabTitles.add(artItem.title);
+                            } else {
+                                collabTitles.add("No Title");
+                            }
+                            if (artItem.description != null) {
+                                collabDescriptions.add(artItem.description);
+                            } else {
+                                collabDescriptions.add("No Description");
+                            }
+                        }else{
+                            if (artItem.title != null) {
+                                foundTitles.add(artItem.title);
+                            } else {
+                                foundTitles.add("No Title");
+                            }
+                            if (artItem.description != null) {
+                                foundDescriptions.add(artItem.description);
+                            } else {
+                                foundDescriptions.add("No Description");
+                            }
+                        }
+                    }
+
+                    //    currItem = dataSnapshot.child(username).getValue(ArtItem.class);
+                    //    createdArt = currUser.created_art; //createdArt is a list of the users created art -> now look this up on their art_items databse
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        if(favoriteArt != null) {  //if user has favorite Art
+            // instantiate arraylists that hold each value
+            favoriteTitles = new ArrayList<>();
+            favoriteDescriptions = new ArrayList<>();
+
+            // get a reference to Art_items
+            dbItems = FirebaseDatabase.getInstance().getReference("Art_items");
+            // iterate through all the art Items in the database
+            dbItems.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //place each art item itnto it's corresponding array
+                    for (int i = 0; i < favoriteArt.size(); i++) {
+                        currItem = favoriteArt.get(i);
+                        artItem = dataSnapshot.child(currItem).getValue(ArtItem.class);
+                        if (artItem.title != null) {
+                            favoriteTitles.add(artItem.title);
+                        } else {
+                            favoriteTitles.add("No Title");
+                        }
+                        if (artItem.description != null) {
+                            favoriteDescriptions.add(artItem.description);
+                        } else {
+                            favoriteDescriptions.add("No Description");
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+//todo:  add drawings, add default value if no art yet added, clean up style
+
+
         /* Define an adapter for each listView*/
-      final  MyArtListView myFavoritesAdapter=new MyArtListView(this, myFavoritesMuralNames, myFavoritesArtistNames,myFavoritesimgid);
-      final  MyArtListView myFoundAdapter=new MyArtListView(this, myFoundMuralNames, myFoundArtistNames,myFoundimgid);
-      final  MyArtListView myCollabsAdapter=new MyArtListView(this, myCollabsMuralNames, myCollabsArtistNames,myCollabsimgid);
+      final  MyArtListView myFavoritesAdapter=new MyArtListView(this, favoriteTitles, favoriteDescriptions,myFavoritesimgid);
+      final  MyArtListView myFoundAdapter=new MyArtListView(this, foundTitles, foundDescriptions,myFoundimgid);
+      final  MyArtListView myCollabsAdapter=new MyArtListView(this, collabTitles, collabDescriptions,myCollabsimgid);
 
         // setOnClickListener for myFavorites
         btnFavorites.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +344,7 @@ public class MyArt extends Activity {
 
 
     }
+
 
 
 }
