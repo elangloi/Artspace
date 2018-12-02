@@ -39,7 +39,7 @@ public class MyArtListView extends ArrayAdapter<String> {
         TextView subtitleText = (TextView) rowView.findViewById(R.id.subtitle);
 
         titleText.setText(maintitle.get(position));
-        if(imgid.size() != 0) {
+        if(imgid != null) {
             imageView.setImageBitmap(imgid.get(position));
         }
         subtitleText.setText(subtitle.get(position));

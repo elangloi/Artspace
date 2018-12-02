@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.sql.ResultSet;
 import java.util.*;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -67,11 +68,17 @@ public class MyArt extends AppCompatActivity {
     ArrayList<String> favoriteDescriptions;
     ArrayList<Bitmap> favoriteImages;
 
+    ArrayList<String> favoriteIDS, collabIDs, foundIDs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("My Art");
         setContentView(R.layout.activity_my_art);
+
+        favoriteIDS = new ArrayList<String>();
+        collabIDs = new ArrayList<String>();
+        foundIDs = new ArrayList<String>();
 
         sp = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
         createdArt = new ArrayList<>();
@@ -132,12 +139,7 @@ public class MyArt extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     //place each art item itnto it's corresponding array
-                    favoriteTitles.clear();
-                    favoriteDescriptions.clear();
-                    favoriteImages.clear();
-                    foundTitles.clear();
-                    foundDescriptions.clear();
-                    foundImages.clear();
+
                     findViewById(R.id.LoadingText).setVisibility(View.VISIBLE);
                     for (int i = 0; i < createdArt.size(); i++) {
                         currItem = createdArt.get(i);
@@ -160,6 +162,8 @@ public class MyArt extends AppCompatActivity {
                                 collabImages.add(null);
                             }
 
+                            collabIDs.add(dataSnapshot.child(currItem).getKey());
+
                         }else{
                             if (artItem.title != null) {
                                 foundTitles.add(artItem.title);
@@ -176,6 +180,8 @@ public class MyArt extends AppCompatActivity {
                             }else{
                                 foundImages.add(null);
                             }
+
+                            foundIDs.add(dataSnapshot.child(currItem).getKey());
 
                         }
                     }
@@ -194,9 +200,7 @@ public class MyArt extends AppCompatActivity {
             dbItems.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    collabTitles.clear();
-                    collabDescriptions.clear();
-                    collabImages.clear();
+
                     findViewById(R.id.LoadingText).setVisibility(View.VISIBLE);
                     //place each art item itnto it's corresponding array
                     for (int i = 0; i < favoriteArt.size(); i++) {
@@ -217,6 +221,8 @@ public class MyArt extends AppCompatActivity {
                         }else{
                             favoriteImages.add(null);
                         }
+
+                        favoriteIDS.add(dataSnapshot.child(currItem).getKey());
                     }
                     //remove loadingText...
                     findViewById(R.id.LoadingText).setVisibility(View.GONE);
@@ -227,7 +233,7 @@ public class MyArt extends AppCompatActivity {
             });
         }
         // if no items indicate this to the user
-        if(favoriteTitles.size()==0){
+     /*   if(favoriteTitles.size()==0){
             favoriteTitles.add("Oops");
             favoriteDescriptions.add("You have no favorite drawings!");
             favoriteImages.add(null);
@@ -242,7 +248,7 @@ public class MyArt extends AppCompatActivity {
             collabTitles.add("Oops");
             collabDescriptions.add("You have not collaborated on any drawings yet!");
             collabImages.add(null);
-        }
+        }*/
         /* Define an adapter for each listView*/
       final  MyArtListView myFavoritesAdapter=new MyArtListView(this, favoriteTitles, favoriteDescriptions,favoriteImages);
       final  MyArtListView myFoundAdapter=new MyArtListView(this, foundTitles, foundDescriptions,foundImages);
@@ -258,6 +264,26 @@ public class MyArt extends AppCompatActivity {
                     listView.setAdapter(myFavoritesAdapter);
                     myFavoritesShown = true;
                     btnFavorites.getBackground().setColorFilter(getResources().getColor(R.color.colorAccent),PorterDuff.Mode.SRC_IN);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent;
+
+                        //  Get id for item
+                        String itemId = favoriteIDS.get(position);
+
+                        // Package id into intent for view item
+                        // TODO Change to itemID
+                        intent = new Intent(MyArt.this,LocationView.class);
+                        intent.putExtra(LocationView.ART_ITEM_TAG, itemId);
+                        //intent.putExtra(LocationView.ART_ITEM_TAG, "-LSRiUU075pbkD5TWO0s");
+
+
+                        // Start activity
+                        startActivity(intent);
+                    }
+                });
             }
         });
         // setOnClickListener for myFound
@@ -268,6 +294,26 @@ public class MyArt extends AppCompatActivity {
                 btnCollabs.getBackground().setColorFilter(getResources().getColor(R.color.holo_blue_light),PorterDuff.Mode.SRC_IN);
                 listView.setAdapter(myFoundAdapter);
                 btnFound.getBackground().setColorFilter(getResources().getColor(R.color.colorAccent),PorterDuff.Mode.SRC_IN);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent;
+
+                        //  Get id for item
+                        String itemId = foundIDs.get(position);
+
+                        // Package id into intent for view item
+                        // TODO Change to itemID
+                        intent = new Intent(MyArt.this,LocationView.class);
+                        intent.putExtra(LocationView.ART_ITEM_TAG, itemId);
+                        //intent.putExtra(LocationView.ART_ITEM_TAG, "-LSRiUU075pbkD5TWO0s");
+
+
+                        // Start activity
+                        startActivity(intent);
+                    }
+                });
             }
         });
         // setOnClickListener for myCollabs
@@ -278,6 +324,26 @@ public class MyArt extends AppCompatActivity {
                 btnFound.getBackground().setColorFilter(getResources().getColor(R.color.holo_blue_light),PorterDuff.Mode.SRC_IN);
                 listView.setAdapter(myCollabsAdapter);
                 btnCollabs.getBackground().setColorFilter(getResources().getColor(R.color.colorAccent),PorterDuff.Mode.SRC_IN);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent;
+
+                        //  Get id for item
+                        String itemId = collabIDs.get(position);
+
+                        // Package id into intent for view item
+                        // TODO Change to itemID
+                        intent = new Intent(MyArt.this,LocationView.class);
+                        intent.putExtra(LocationView.ART_ITEM_TAG, itemId);
+                        //intent.putExtra(LocationView.ART_ITEM_TAG, "-LSRiUU075pbkD5TWO0s");
+
+
+                        // Start activity
+                        startActivity(intent);
+                    }
+                });
             }
         });
 

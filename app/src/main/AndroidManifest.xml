@@ -29,10 +29,10 @@
             android:parentActivityName=".MainActivity">
         </activity>
         <activity android:name=".LocationView"
-            android:parentActivityName=".MainActivity">
+            >
         </activity>
         <activity android:name=".CanvasDrawing"
-            android:parentActivityName=".MainActivity">
+            >
         </activity>
         <activity android:name=".ExploreActivity"
             android:parentActivityName=".MainActivity">
