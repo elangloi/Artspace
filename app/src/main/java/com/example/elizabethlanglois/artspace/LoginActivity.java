@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity{
                                 UserItem userfound = i.getValue(UserItem.class);
                                 try {
                                     if (userfound.username.equals(mUsername.getText().toString()) && userfound.password != null && userfound.password.equals(SHA1(mPassword.getText().toString()))) {
-                                        Toast toast = Toast.makeText(getApplicationContext(), "You're in! (not really)", Toast.LENGTH_SHORT);
+                                        Toast toast = Toast.makeText(getApplicationContext(), "You're logged in!", Toast.LENGTH_SHORT);
                                         toast.show();
                                         Intent k = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(k);
