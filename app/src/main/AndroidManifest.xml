@@ -15,32 +15,33 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />android:background="@drawable/heart"
+                <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity
-            android:name=".AddArt"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity
-            android:name=".MyArt"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity
-            android:name=".LocationView"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity
-            android:name=".CanvasDrawing"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity
-            android:name=".ExploreActivity"
-            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".AddArt"
+            android:parentActivityName=".MainActivity">
+
+        </activity>
+        <activity android:name=".MyArt"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".LocationView"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".CanvasDrawing"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".ExploreActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"
-            />
+            android:value="@string/google_maps_key"/>
+
     </application>
 
 </manifest>
