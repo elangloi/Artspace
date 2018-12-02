@@ -3,6 +3,7 @@ package com.example.elizabethlanglois.artspace;
 
 import android.app.Activity;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,9 @@ public class MyArtListView extends ArrayAdapter<String> {
     private final Activity context;
     private final ArrayList<String> maintitle;
     private final ArrayList<String> subtitle;
-    private final Integer[] imgid;
+    private final ArrayList<Bitmap> imgid;
 
-    public MyArtListView(Activity context, ArrayList<String> maintitle,ArrayList<String> subtitle, Integer[] imgid) {
+    public MyArtListView(Activity context, ArrayList<String> maintitle,ArrayList<String> subtitle, ArrayList<Bitmap> imgid) {
         super(context, R.layout.my_list_item, maintitle);
         // TODO Auto-generated constructor stub
 
@@ -41,7 +42,8 @@ public class MyArtListView extends ArrayAdapter<String> {
         TextView subtitleText = (TextView) rowView.findViewById(R.id.subtitle);
 
         titleText.setText(maintitle.get(position));
-        imageView.setImageResource(imgid[0]);
+        if(imgid.get(position) != null)
+        imageView.setImageBitmap(imgid.get(position));
         subtitleText.setText(subtitle.get(position));
 
         if(position %2 == 1)
