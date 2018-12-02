@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity{
                                 UserItem userfound = i.getValue(UserItem.class);
                                 try {
                                     if (userfound.username.equals(mUsername.getText().toString()) && userfound.password != null && userfound.password.equals(SHA1(mPassword.getText().toString()))) {
-                                        Toast toast = Toast.makeText(getApplicationContext(), "You're in! (not really)", Toast.LENGTH_SHORT);
+                                        Toast toast = Toast.makeText(getApplicationContext(), "You're in!", Toast.LENGTH_SHORT);
                                         toast.show();
                                         Intent k = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(k);
@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity{
                                     return;
                                 }
                             }
-                            Toast toast = Toast.makeText(getApplicationContext(), "not registered or wrong password!", Toast.LENGTH_SHORT);
+                            Toast toast = Toast.makeText(getApplicationContext(), "Not registered or wrong password!", Toast.LENGTH_SHORT);
                             toast.show();
                             return;
                         }
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity{
                             for (DataSnapshot i : dataSnapshot.getChildren()) {
                                 UserItem userfound = i.getValue(UserItem.class);
                                 if (userfound.username.equals(mUsername.getText().toString())) {
-                                        Toast toast = Toast.makeText(getApplicationContext(), "username already exists!", Toast.LENGTH_SHORT);
+                                        Toast toast = Toast.makeText(getApplicationContext(), "Username already exists!", Toast.LENGTH_SHORT);
                                         toast.show();
                                         return;
                                 }
@@ -130,6 +130,9 @@ public class LoginActivity extends AppCompatActivity{
 
                                 Toast toast = Toast.makeText(getApplicationContext(), "Registered as " + user.username, Toast.LENGTH_LONG);
                                 toast.show();
+
+                                Intent k = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(k);
 
                             } catch (Exception e) {
                                 Log.i("DebugLog", "Error hashing!");

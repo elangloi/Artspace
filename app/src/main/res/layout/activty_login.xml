@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="enter credentials and click register/login" />
+            android:text="Enter credentials then click register or login" />
 
         <EditText
             android:id="@+id/editText1"

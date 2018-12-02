@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -65,18 +66,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     DatabaseReference dbItems;
     SupportMapFragment mapFragment;
 
-
+    SharedPreferences sp;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Force users to log in before accessing app
+        sp = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
+        username = sp.getString(LoginActivity.MY_USERNAME, null);
+        if(username == null) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }
+
         SupportPlaceAutocompleteFragment placeAutocompleteFragment = (SupportPlaceAutocompleteFragment) getSupportFragmentManager().
                 findFragmentById(R.id.place_autocomplete_fragment);
-
-
-
 
 
         placeAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -254,17 +261,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (id == R.id.btnaddart) {
             // Move to art art activity
             startActivity(new Intent(MainActivity.this, AddArt.class));
-        } else if (id == R.id.btnviewart) {
-            startActivity(new Intent(MainActivity.this,
-                    LocationView.class).putExtra(LocationView.ART_ITEM_TAG, "-LSRiUU075pbkD5TWO0s"));
         } else if(id == R.id.btnmyart){
             startActivity(new Intent(MainActivity.this, MyArt.class));
-        } else if(id == R.id.btndraw) {
-            startActivity(new Intent(MainActivity.this, CanvasDrawing.class));
         } else if(id == R.id.btnexplore) {
             startActivity(new Intent(MainActivity.this, ExploreActivity.class));
-        } else if(id == R.id.btnlogin){
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
