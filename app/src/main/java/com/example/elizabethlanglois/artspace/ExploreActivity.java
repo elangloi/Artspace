@@ -122,6 +122,11 @@ public class ExploreActivity extends AppCompatActivity {
                 ArtTimes.clear();
                 ArtLocations.clear();
 
+                Integer[] a = {R.drawable.monalisa};
+                allItemsAdapter = new ExploreActivityView(thisActivity, ArtNames, ArtDescriptions, ArtBitmaps, ArtTypes, ArtDates, ArtTimes, ArtLocations, ArtItemIds, a);
+                ListView listView = (ListView) findViewById(R.id.list);
+                listView.setAdapter(allItemsAdapter);
+
                 ResultsText.setText("Loading results");
 
                 //theList.setFooterDividersEnabled(true);
@@ -254,8 +259,6 @@ public class ExploreActivity extends AppCompatActivity {
                                             }
                                         });
 
-                                    } else {
-                                        ResultsText.setText("No results found");
                                     }
                                 }
                         }
@@ -268,7 +271,31 @@ public class ExploreActivity extends AppCompatActivity {
                     });
                 }else{
                     // Didn't search anything
-                    ResultsText.setText("No results found");
+                    ResultsText.setText("");
+
+                    allItemsAdapter = new ExploreActivityView(thisActivity, ArtNames, ArtDescriptions, ArtBitmaps, ArtTypes, ArtDates, ArtTimes, ArtLocations, ArtItemIds, a);
+
+                    ArtItemIds.clear();
+                    ArtNames.clear();
+                    ArtDescriptions.clear();
+                    ArtTypes.clear();
+                    ArtDates.clear();
+                    ArtTimes.clear();
+                    ArtLocations.clear();
+
+                    // Add No Results item
+                    ArtItemIds.add(null);
+                    ArtNames.add("No results found");
+                    ArtDescriptions.add("");
+                    ArtTypes.add("");
+                    ArtDates.add("");
+                    ArtTimes.add("");
+                    ArtLocations.add("");
+
+                    // Get ListView object from xml
+                    listView = (ListView) findViewById(R.id.list);
+
+                    listView.setAdapter(allItemsAdapter);
                 }
             }
         });
