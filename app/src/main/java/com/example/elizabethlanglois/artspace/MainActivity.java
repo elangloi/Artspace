@@ -34,6 +34,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView radiusText;
 
     DatabaseReference dbItems;
+    SupportMapFragment mapFragment;
 
 
 
@@ -95,34 +97,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         dbItems = FirebaseDatabase.getInstance().getReference("Art_items");
 
-        dbItems.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    ArtItem artItem = snapshot.getValue(ArtItem.class);
-                    //Log.i("TEST", Double.toString(artItem.latitude));
-                    if (artItem.latitude != 0 && artItem.longitude != 0) {
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(artItem.latitude, artItem.longitude)));
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
-
-        mapFragment.getMapAsync(this);
 
 
         if (checkSelfPermission(LOCATION_PERM) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(new String[]{LOCATION_PERM}, LOCATION_PERM_REQUEST);
+        else
+            LoadOverlay();
+
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -152,6 +137,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    public void LoadOverlay() {
+
+        mapFragment.getMapAsync(this);
+
+        dbItems.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    ArtItem artItem = snapshot.getValue(ArtItem.class);
+                    //Log.i("TEST", Double.toString(artItem.latitude));
+                    if (artItem.latitude != 0 && artItem.longitude != 0) {
+                        Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(artItem.latitude, artItem.longitude)));
+                        m.setTag(snapshot.getKey());
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
 
     @Override
@@ -160,6 +172,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (requestCode == LOCATION_PERM_REQUEST) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission is granted
+
+                LoadOverlay();
+
             } else {
                 Toast.makeText(getApplicationContext(), "This app needs access to your location", Toast.LENGTH_LONG);
             }
@@ -278,10 +293,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
         }
 
-        LatLng center = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        mMap.animateCamera( CameraUpdateFactory.zoomTo(5f));
-        mCircle = mMap.addCircle(new CircleOptions().center(center));
-        radiusBar.setProgress(10);
+        if(mLastLocation != null) {
+            LatLng center = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            mMap.animateCamera( CameraUpdateFactory.zoomTo(10f));
+            mCircle = mMap.addCircle(new CircleOptions().center(center));
+            radiusBar.setProgress(10);
+        }
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                startActivity(new Intent(MainActivity.this,
+                        LocationView.class).putExtra(LocationView.ART_ITEM_TAG, ((String)marker.getTag()) ));
+                return true;
+            }
+        });
+
 
     }
 
