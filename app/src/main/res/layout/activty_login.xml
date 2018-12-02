@@ -32,14 +32,7 @@
             android:textStyle="bold"
             android:textColor="@android:color/holo_blue_light"
             android:textSize="40dp" />
-
-        <TextView
-            android:id="@+id/instructiontext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="Enter credentials then click register or login" />
-
+        
         <EditText
             android:id="@+id/editText1"
             android:layout_width="match_parent"
