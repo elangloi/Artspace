@@ -92,11 +92,11 @@ public class ExploreActivity extends AppCompatActivity {
         // Get current user
         username = sp.getString(LoginActivity.MY_USERNAME, null);
 
-        Log.i(TAG,"User is " + username.toString());
+
 
         // Check if user exists
         if(username != null) {
-
+            Log.i(TAG,"User is " + username.toString());
 
         }
 
