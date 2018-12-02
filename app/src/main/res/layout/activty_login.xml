@@ -33,6 +33,13 @@
             android:textColor="@android:color/holo_blue_light"
             android:textSize="40dp" />
 
+        <TextView
+            android:id="@+id/instructiontext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="enter credentials and click register/login" />
+
         <EditText
             android:id="@+id/editText1"
             android:layout_width="match_parent"
@@ -46,8 +53,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="Username" />
+            android:text="Username (no special characters or spaces)" />
 
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="textPassword"
+            />
+
+        <TextView
+            android:id="@+id/passwordtext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Password (no spaces)" />
 
         <Button
             android:id="@+id/button1"
