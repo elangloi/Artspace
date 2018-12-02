@@ -252,7 +252,9 @@ public class ExploreActivity extends AppCompatActivity {
                                                 // Package id into intent for view item
                                                 // TODO Change to itemID
                                                 intent = new Intent(ExploreActivity.this,LocationView.class);
-                                                intent.putExtra(LocationView.ART_ITEM_TAG, "-LSRiUU075pbkD5TWO0s");
+                                                intent.putExtra(LocationView.ART_ITEM_TAG, itemId);
+                                                //intent.putExtra(LocationView.ART_ITEM_TAG, "-LSRiUU075pbkD5TWO0s");
+
 
                                                 // Start activity
                                                 startActivity(intent);

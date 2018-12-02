@@ -84,7 +84,7 @@ public class ExploreActivityView extends ArrayAdapter<String> {
             subtitleText.setVisibility(View.VISIBLE);
             subtitleText.setText(subtitle.get(position));
             typeText.setVisibility(View.VISIBLE);
-            vFavorite.setVisibility(View.VISIBLE);
+            vFavorite.setVisibility(View.INVISIBLE);
             typeText.setText(type.get(position));
 
             // Change depending on if location exists
