@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -20,13 +21,27 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity android:name=".AddArt" />
-        <activity android:name=".MyArt" />
-        <activity android:name=".LocationView" />
-        <activity android:name=".CanvasDrawing"/>
+        <activity android:name=".AddArt"
+            android:parentActivityName=".MainActivity">
+
+        </activity>
+        <activity android:name=".MyArt"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".LocationView"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".CanvasDrawing"
+            android:parentActivityName=".MainActivity">
+        </activity>
         <activity android:name=".ExploreActivity"
             android:parentActivityName=".MainActivity">
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
+
     </application>
 
 </manifest>
