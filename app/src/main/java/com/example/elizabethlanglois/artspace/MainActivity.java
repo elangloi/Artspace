@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mCircle.setRadius(progress * 1609.34);
-                radiusText.setText("Radius: " + progress + " mi");
+                radiusText.setText("Radius from your Location: " + progress + " mi");
             }
 
             @Override
